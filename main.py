@@ -4,7 +4,9 @@ import sys
 
 import curses
 
-from cursesshortcuts import draw_borders, draw_box_borders
+from cursesshortcuts import draw_borders, draw_box_borders, draw_text
+from gen_colors import gen_colors
+from text_entry import search_item
 
 # Deal with being unable to import curses on windows because it doesnt work properly by default
 try:
@@ -32,6 +34,11 @@ term_height = os.get_terminal_size().lines
 term_width = os.get_terminal_size().columns
 curses.start_color()
 
+gen_colors(curses)
+
+curses.init_pair(1, 1, 0) # default text
+curses.init_pair(2, 0, 1) # Inverted from default
+
 curses.curs_set(False)
 screen.keypad(True)
 curses.noecho()
@@ -39,17 +46,35 @@ draw_borders(screen)
 draw_box_borders(screen, curses)
 screen.addstr(5, 110, 'hello :3')
 
+current_selection = 1
+box_selection = 0
 
-
-
-
-
-
-
-
-
+selected_items = ['woahg', 'woahj', '', '', '', '', '', '', '', '', '']
+float_values = [0.035, 0.035, 0.035, 0.035, 0.035, 0.035, 0.035, 0.035, 0.035, 0.035, 0.035]
+# main loop
 while True:
-    if screen.getch() == 10: break
+    draw_text(screen, curses, selected_items, current_selection, float_values)
+    key = screen.getch()
+    screen.addstr(35, 2, str(key) + "####")
+
+    match key:
+        case 9: # tab
+            current_selection = current_selection+1 if current_selection != 10 else 1
+            box_selection = 0
+            # draw_text(screen, curses, selected_items, current_selection, float_values)
+        case 351: # shift+tab
+            current_selection = current_selection-1 if current_selection != 1 else 10
+            box_selection = 0
+        
+        case 10:
+            if box_selection == 0:
+                selected_items[current_selection] = search_item(screen, curses, selected_items[current_selection], current_selection)
+        
+    
+
+        # case
+    
+    # screen.addstr(1, 0, "asd", 2)
 
 
 

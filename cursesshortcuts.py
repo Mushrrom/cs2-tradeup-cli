@@ -1,3 +1,5 @@
+from cs2_functions import calculate_exterior
+
 def draw_borders(screen):
     """A simple function that draws a border around the app"""
     # Horizontal borders
@@ -109,7 +111,6 @@ def draw_box_borders(screen, curses):
     screen.addstr(7+diff, 74, ''.join('─' for _ in range(19)))
     screen.addstr(7+diff, 98, ''.join('─' for _ in range(19)))
 
-    print(curses.A_UNDERLINE)
 
     screen.addstr(4, 3  , "item 1:", curses.A_BOLD + curses.A_UNDERLINE)
     screen.addstr(4, 27  , "item 2:", curses.A_BOLD + curses.A_UNDERLINE)
@@ -122,3 +123,33 @@ def draw_box_borders(screen, curses):
     screen.addstr(4+diff, 51  , "item 8:", curses.A_BOLD + curses.A_UNDERLINE)
     screen.addstr(4+diff, 74  , "item 9:", curses.A_BOLD + curses.A_UNDERLINE)
     screen.addstr(4+diff, 98  , "item 10:", curses.A_BOLD + curses.A_UNDERLINE)
+
+
+
+def draw_text(screen, curses, item_values: list, selection: int, floats: list):
+    """Draws the text for each of the boxes"""
+    start_locations = [3, 27, 51, 74, 98]
+    start_heights = [6, 16]
+    for count, i in enumerate(item_values):
+        if count > 5:
+            column = count-5
+            row = 2
+        else:
+            column = count
+            row = 1
+        
+        if column == 3:
+            box_width = 18
+        else:
+            box_width = 19
+
+        if len(i) <= box_width:
+            c = 1 if selection != count else 2
+            screen.addstr(start_heights[row-1], start_locations[column-1],
+                            i + ''.join(' ' for _ in range(box_width-len(i))),
+                              curses.color_pair(c))
+
+        screen.addstr(start_heights[row-1]+2, start_locations[column-1], f"Float: {floats[count]}")
+        screen.addstr(start_heights[row-1]+3, start_locations[column-1], f"Exterior: {calculate_exterior(floats[count])}")
+        
+
