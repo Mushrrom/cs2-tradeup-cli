@@ -138,7 +138,7 @@ def search_item(screen, curses, current_value, selection, matrix, vectorizer):
                 
                 screen.addstr(y+2+count, x, i[:17]+"…", curses.color_pair(color))
             else:
-                screen.addstr(y+2+count, x, i, curses.color_pair(color))
+                screen.addstr(y+2+count, x, i + ''.join(' ' for _ in range(18-len(i))), curses.color_pair(color))
         
         if len(best_matches) < 4:
             for i in range(4-len(best_matches)):
