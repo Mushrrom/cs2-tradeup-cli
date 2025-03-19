@@ -28,8 +28,8 @@ except ModuleNotFoundError:
 # Min terminal height needed to run this program without issues
 term_height = os.get_terminal_size().lines
 term_width = os.get_terminal_size().columns
-if term_height < 35 or term_width < 120:
-    print(f"Terminal height must be at least 120x35 (currently {term_width}x{term_height})")
+if term_height < 35 or term_width < 121:
+    print(f"Terminal size must be at least 121x35 (currently {term_width}x{term_height})")
     quit()
 
 # Curses colour stuff
@@ -48,7 +48,6 @@ curses.noecho()
 draw_borders(screen)
 draw_box_borders(screen, curses)
 matrix, vectorizer = generate_matrix() 
-screen.addstr(5, 110, 'hello :3')
 
 current_selection = 1
 box_selection = 0
@@ -96,6 +95,10 @@ while True:
             screen.addstr(22, 2, 'All items must be of same rarity for trade up', curses.color_pair(3))
     
     else:
+        # Border stuff
+        for i in range(12):
+            screen.addstr(22+i, 39, '│')
+            screen.addstr(22+i, 77, '│')
         row_inc = 0
         column_inc = 0
 

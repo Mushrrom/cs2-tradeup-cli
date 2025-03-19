@@ -1,1 +1,2 @@
-scikit-learn
+numpy==2.2.4
+scikit_learn==1.6.1

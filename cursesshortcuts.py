@@ -129,12 +129,16 @@ def draw_box_borders(screen, curses):
     screen.addstr(20, 119, '┤')
     screen.addstr(20, 0, '├')
 
+    
+
 
 
 def draw_text(screen, curses, item_values: list, selection: int, floats: list, box_selection: int):
     """Draws the text for each of the boxes"""
     start_locations = [3, 27, 51, 74, 98]
     start_heights = [6, 16]
+    screen.addstr(8, 1, ''.join(' ' for _ in range(118)))
+    screen.addstr(18, 1, ''.join(' ' for _ in range(118)))
     for count, i in enumerate(item_values):
         if count > 5:
             column = count-5
@@ -159,5 +163,7 @@ def draw_text(screen, curses, item_values: list, selection: int, floats: list, b
         c = 1 if selection != count or box_selection != 1 else 2
         screen.addstr(start_heights[row-1]+2, start_locations[column-1], f"Float: {floats[count]}", curses.color_pair(c))
         screen.addstr(start_heights[row-1]+3, start_locations[column-1], f"Exterior: {calculate_exterior(floats[count])}", curses.color_pair(1))
+    
+    
         
 
