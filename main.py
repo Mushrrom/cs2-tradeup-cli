@@ -7,6 +7,7 @@ import curses
 from cursesshortcuts import draw_borders, draw_box_borders, draw_text
 from gen_colors import gen_colors
 from text_entry import search_item
+from search_items import generate_matrix
 
 # Deal with being unable to import curses on windows because it doesnt work properly by default
 try:
@@ -29,21 +30,23 @@ term_height = os.get_terminal_size().lines
 term_width = os.get_terminal_size().columns
 if term_height < 35 or term_width < 120:
     print(f"Terminal height must be at least 120x35 (currently {term_width}x{term_height})")
+    quit()
 
-term_height = os.get_terminal_size().lines
-term_width = os.get_terminal_size().columns
+# Curses colour stuff
 curses.start_color()
-
 gen_colors(curses)
-
 curses.init_pair(1, 1, 0) # default text
 curses.init_pair(2, 0, 1) # Inverted from default
 
+# Curses config
 curses.curs_set(False)
 screen.keypad(True)
 curses.noecho()
+
+# Initial setup
 draw_borders(screen)
 draw_box_borders(screen, curses)
+matrix, vectorizer = generate_matrix() 
 screen.addstr(5, 110, 'hello :3')
 
 current_selection = 1
@@ -68,7 +71,7 @@ while True:
         
         case 10:
             if box_selection == 0:
-                selected_items[current_selection] = search_item(screen, curses, selected_items[current_selection], current_selection)
+                selected_items[current_selection] = search_item(screen, curses, selected_items[current_selection], current_selection, matrix, vectorizer)
         
     
 

@@ -143,11 +143,13 @@ def draw_text(screen, curses, item_values: list, selection: int, floats: list):
         else:
             box_width = 19
 
-        if len(i) <= box_width:
-            c = 1 if selection != count else 2
+        c = 1 if selection != count else 2
+        if len(i) <= 17:
             screen.addstr(start_heights[row-1], start_locations[column-1],
                             i + ''.join(' ' for _ in range(box_width-len(i))),
                               curses.color_pair(c))
+        else:
+            screen.addstr(start_heights[row-1], start_locations[column-1], i[:box_width-1]+"…", curses.color_pair(c))
 
         screen.addstr(start_heights[row-1]+2, start_locations[column-1], f"Float: {floats[count]}")
         screen.addstr(start_heights[row-1]+3, start_locations[column-1], f"Exterior: {calculate_exterior(floats[count])}")

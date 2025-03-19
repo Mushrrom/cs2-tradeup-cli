@@ -3,6 +3,7 @@ import difflib
 
 from cursesshortcuts import draw_borders, draw_box_borders
 
+from search_items import search_matrix
 
 with open('json/skinlist.json', 'r') as f:
     skins_list = json.loads(f.read())
@@ -11,7 +12,7 @@ letters = list('abcdefghijklmnopqrstuvwxyz')
 
 letters_upper = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-def search_item(screen, curses, current_value, selection):
+def search_item(screen, curses, current_value, selection, matrix, vectorizer):
     current_text = current_value
     start_locations = [3, 27, 51, 74, 98]
     start_heights = [6, 16]
@@ -48,6 +49,10 @@ def search_item(screen, curses, current_value, selection):
     if len(current_value)<17:
         screen.addstr(y, x, current_text, curses.color_pair(1))
         screen.addstr(y, x+len(current_value), " ", curses.color_pair(2))
+    else:
+        visible_text = current_text[-16:]
+        screen.addstr(y, x, "…" + visible_text,curses.color_pair(1))
+        screen.addstr(y, x+17, " ", curses.color_pair(2))
 
     # Stupid but really useful
     spaces = '                  ' if column == 3 else '                   '
@@ -87,14 +92,15 @@ def search_item(screen, curses, current_value, selection):
             current_text += ' '
         
         elif c == 8: # Delete key
-            screen.addstr(y, x+len(current_text), " ", curses.color_pair(1)) # deletes cursor
+            if len(current_text) <18:
+                screen.addstr(y, x+len(current_text), " ", curses.color_pair(1)) # deletes cursor
             current_text = current_text[:-1]
             
         
         elif c == 258: # Down arrow
             screen.addstr(y, x+len(current_text), " ", curses.color_pair(1)) # Remove cursor
 
-            if current_search_selection != 3:
+            if current_search_selection != 4:
                 current_search_selection += 1
             else:
                 current_search_selection = 0
@@ -105,24 +111,31 @@ def search_item(screen, curses, current_value, selection):
             if current_search_selection != 0:
                 current_search_selection -= 1
             else:
-                current_search_selection = 3
+                current_search_selection = 4
 
         # Render the text
         if current_search_selection == 0:
             if len(current_text)<17:
                 screen.addstr(y, x, current_text, curses.color_pair(1))
                 screen.addstr(y, x+len(current_text), " ", curses.color_pair(2))
-            best_matches = difflib.get_close_matches(current_text, skins_list, 4)
+            else:
+                visible_text = current_text[-16:]
+                screen.addstr(y, x, "…" + visible_text,curses.color_pair(1))
+                screen.addstr(y, x+17, " ", curses.color_pair(2))
+
+            best_matches = search_matrix(matrix, vectorizer, current_text)
             print(best_matches)
 
-            for count, i in enumerate(best_matches):
-                if len(i) > 17:
-                    screen.addstr(y+2+count, x, i[:17]+"-")
-                else:
-                    screen.addstr(y+2+count, x, i)
-            
-            if len(best_matches) < 4:
-                for i in range(4-len(best_matches)):
-                    screen.addstr(y+5-i, x, spaces)
-
+        for count, i in enumerate(best_matches):
+            color = 1 if current_search_selection != count+1 else 2
+            if len(i) > 18:
+                
+                screen.addstr(y+2+count, x, i[:17]+"…", curses.color_pair(color))
+            else:
+                screen.addstr(y+2+count, x, i, curses.color_pair(color))
+        
+        if len(best_matches) < 4:
+            for i in range(4-len(best_matches)):
+                screen.addstr(y+5-i, x, spaces)
+        
 
