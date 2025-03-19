@@ -39,6 +39,7 @@ curses.init_pair(1, 1, 0) # default text
 curses.init_pair(2, 0, 1) # Inverted from default
 curses.init_pair(3, 4, 0) # Red FG
 
+
 # Curses config
 curses.curs_set(False)
 screen.keypad(True)
@@ -102,9 +103,11 @@ while True:
         row_inc = 0
         column_inc = 0
 
-        # row_amnt = 30
         for i in result[:36]:
-            screen.addstr(22+row_inc, 2+column_inc*38, f'{i[1]}%: ({i[2]}) {i[0]}')
+            s = f'{i[1]}%: ({i[2]}) {i[0]}'
+            if len(i[0]) > 25:
+                s = f'{i[1]}%: ({i[2]}) {i[0][:24]}…'
+            screen.addstr(22+row_inc, 2+column_inc*38, s)
             if column_inc != 2:
                 column_inc += 1
             else:
