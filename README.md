@@ -4,8 +4,12 @@
 ## How to run
 install numpy and scikit using `pip install numpy scikit-learn`
 
-if running on windows install `windows-curses` using `pip install windows-curses`
-(this is not required on linux as curses works natively)
+### Note for windows
+if running on windows install `windows-curses` using `pip install windows-curses` (this isnt required on linux as curses works natively)
+
+If running on windows 11 this program works a lot better in the legacy command prompt. You can assess this by searching for `conhost` in windows search - it *works* on the usual terminal but the colours will be a bit messed up.
+(this does not apply for windows 10)
+
 
 ## Usage
 Use tab/shift-tab to select the item, and use the up/down arrow keys to select options with the item.
