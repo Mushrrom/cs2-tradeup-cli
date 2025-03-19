@@ -124,9 +124,14 @@ def draw_box_borders(screen, curses):
     screen.addstr(4+diff, 74  , "item 9:", curses.A_BOLD + curses.A_UNDERLINE)
     screen.addstr(4+diff, 98  , "item 10:", curses.A_BOLD + curses.A_UNDERLINE)
 
+    screen.addstr(21, 3  , "Outputs:", curses.A_BOLD + curses.A_UNDERLINE)
+    screen.addstr(20, 0, ''.join('─' for _ in range(120)))
+    screen.addstr(20, 119, '┤')
+    screen.addstr(20, 0, '├')
 
 
-def draw_text(screen, curses, item_values: list, selection: int, floats: list):
+
+def draw_text(screen, curses, item_values: list, selection: int, floats: list, box_selection: int):
     """Draws the text for each of the boxes"""
     start_locations = [3, 27, 51, 74, 98]
     start_heights = [6, 16]
@@ -143,7 +148,7 @@ def draw_text(screen, curses, item_values: list, selection: int, floats: list):
         else:
             box_width = 19
 
-        c = 1 if selection != count else 2
+        c = 1 if selection != count or box_selection != 0 else 2
         if len(i) <= 17:
             screen.addstr(start_heights[row-1], start_locations[column-1],
                             i + ''.join(' ' for _ in range(box_width-len(i))),
@@ -151,7 +156,8 @@ def draw_text(screen, curses, item_values: list, selection: int, floats: list):
         else:
             screen.addstr(start_heights[row-1], start_locations[column-1], i[:box_width-1]+"…", curses.color_pair(c))
 
-        screen.addstr(start_heights[row-1]+2, start_locations[column-1], f"Float: {floats[count]}")
-        screen.addstr(start_heights[row-1]+3, start_locations[column-1], f"Exterior: {calculate_exterior(floats[count])}")
+        c = 1 if selection != count or box_selection != 1 else 2
+        screen.addstr(start_heights[row-1]+2, start_locations[column-1], f"Float: {floats[count]}", curses.color_pair(c))
+        screen.addstr(start_heights[row-1]+3, start_locations[column-1], f"Exterior: {calculate_exterior(floats[count])}", curses.color_pair(1))
         
 

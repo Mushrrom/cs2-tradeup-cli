@@ -72,6 +72,12 @@ def search_item(screen, curses, current_value, selection, matrix, vectorizer):
             else:
                 return ''
 
+        elif c == 27: # esc
+            screen.clear()
+            draw_box_borders(screen, curses)
+            draw_borders(screen)
+            return ''
+        
         elif 97 <= c <= 122 and current_search_selection == 0: # Lower case letters
             current_text += letters[c-97]
             
@@ -138,4 +144,49 @@ def search_item(screen, curses, current_value, selection, matrix, vectorizer):
             for i in range(4-len(best_matches)):
                 screen.addstr(y+5-i, x, spaces)
         
+def change_float(screen, curses, current_value, selection):
+    current_float = str(current_value)[2:]
+    start_locations = [10, 34, 58, 81, 105]
+    start_heights = [8, 18]
+
+    if selection > 5:
+        column = selection-5
+        row = 2
+    else:
+        column = selection
+        row = 1
+
+    y = start_heights[row-1]
+    x = start_locations[column-1]
+
+    screen.addstr(y, x-7, "Float: ", curses.color_pair(1))
+
+    screen.addstr(y,x, f"0.{current_float}", curses.color_pair(1))
+    screen.addstr(y,x+2+len(current_float), " ", curses.color_pair(2))
+
+    while True:
+        c = screen.getch()
+        
+        if c == 10: # enter
+            screen.addstr(y, x+len(current_float)+2, " ", curses.color_pair(1)) # deletes cursor
+            return float("0." + current_float)
+
+        elif c == 8: # Delete key
+            screen.addstr(y, x+len(current_float)+2, " ", curses.color_pair(1)) # deletes cursor
+            current_float = current_float[:-1]
+
+        elif 48 <= c <= 57: # Numbers
+            if len(current_float) <= 8:
+                current_float += str(c-48)
+        
+        elif c == 27: # esc
+            screen.addstr(y, x+len(current_float)+2, " ", curses.color_pair(1)) # deletes cursor
+            return current_value
+        
+        screen.addstr(y,x, f"0.{current_float}", curses.color_pair(1))
+        screen.addstr(y,x+2+len(current_float), " ", curses.color_pair(2))
+        
+
+
+
 
